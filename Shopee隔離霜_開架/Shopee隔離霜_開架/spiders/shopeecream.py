@@ -22,16 +22,18 @@ class ShopeecreamSpider(scrapy.Spider):
         for product in all_products:
             img = []
             i['product_name'] = product.find("div", {'class': '_1NoI8_ _16BAGk'}).text
-            i['product_price'] = product.find("span", class_="_341bF0").text
+            i['product_price'] = product.find("span", class_="_341bF0").text.replace(',','')
             i['product_url'] = 'https://shopee.tw' + product.a['href']
             i['product_category'] = 'Foundation'
             image = product.find('img').attrs['src']
             img.append(image)
             i['product_images'] = img[0]
             i['product_source'] = "Shopee"
+            i['product_subcategory'] = 'isolation'
+
             yield i
 
-        if ShopeecreamSpider.page <= 100:
+        if ShopeecreamSpider.page <= 20:
             ShopeecreamSpider.page += 1
             url = next_page
             yield response.follow(url, callback=self.parse)
